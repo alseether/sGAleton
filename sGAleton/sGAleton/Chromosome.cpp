@@ -90,7 +90,7 @@ std::vector<unsigned int> Chromosome::getCortesC() const{
 }
 
 int Chromosome::sliceScore(Slice s) const{
-	tPizza pizza = *(Environment::getInstance()->getPizza());
+	const tPizza* pizza = Environment::getInstance()->getPizza();
 	unsigned int tom = 0, mush = 0;
 
 	unsigned int L = Environment::getInstance()->getL();
@@ -101,10 +101,10 @@ int Chromosome::sliceScore(Slice s) const{
 
 	for (unsigned int i = s.top; i < s.bottom; ++i){
 		for (unsigned int j = s.left; j < s.right; ++j){
-			if (pizza[i][j] == 'T'){
+			if ((*pizza)[i][j] == 'T'){
 				tom++;
 			}
-			else if (pizza[i][j] == 'M'){
+			else if ((*pizza)[i][j] == 'M'){
 				mush++;
 			}
 			if (tom >= L && mush >= L){

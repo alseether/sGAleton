@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <iostream>
+#include <thread>
 #include "GA.hpp"
 #include "Parameters.hpp"
 #include "Environment.hpp"
@@ -96,9 +98,19 @@ double GA::evaluatePopulation(){
 
 	unsigned int indexOfTheBest;
 
+	std::vector<std::thread> threads;
+
+	for (std::size_t i = 0; i < m_population.size(); ++i){
+		threads.emplace_back(&Individual::fitness, &m_population[i]);
+	}
+
+	for (std::size_t i = 0; i < threads.size(); ++i){
+		threads[i].join();
+	}
+
 	// Busqueda del mejor
 	for (std::size_t i = 0; i < m_population.size(); ++i){
-		aux = m_population[i].fitness();
+		aux = m_population[i].getAdaptation();
 		sumaAptitud += aux;
 		if (maximo < aux){
 			maximo = aux;

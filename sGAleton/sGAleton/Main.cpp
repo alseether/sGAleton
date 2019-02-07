@@ -1,4 +1,5 @@
 #include <iostream>
+#include <time.h>
 #include <fstream>
 #include <string>
 #include "Environment.hpp"
@@ -12,7 +13,7 @@ int loadProblem(std::string filepath){
 	std::ifstream in;
 	in.open(filepath, std::ios::in);
 	if (!in.is_open()){
-		std::cerr << "Error al abrir el archivo" << std::endl;
+		std::cerr << "Error al abrir el archivo de entrada" << std::endl;
 		return -1;
 	}
 
@@ -35,7 +36,25 @@ int loadProblem(std::string filepath){
 	}
 
 	Environment::getInstance()->setPizza(pizza);
+
+	in.close();
 	return 0;
+}
+
+void saveSolution(const std::string type, Individual &best){
+	std::ofstream out;
+	std::string file = "Solutions\\Sol-" + type + "-" + std::to_string(time(NULL)) + ".txt";
+	out.open(file, std::ios::out);
+	if (!out.is_open()){
+		std::cerr << "Error al abrir el archivo de salida" << std::endl;
+		return;
+	}
+
+	out << best.getAdaptation() << std::endl;
+
+	out << best.toString() << std::endl;
+	
+	out.close();
 }
 
 std::string pizzaToString(const tPizza &pizza){
@@ -79,64 +98,61 @@ std::string pizzaToString(const tPizza &pizza, const Individual &best){
 int main(){
 	GA ga;
 
+	double bestScore;
+
 	std::shared_ptr<SelectionOperator> sel = std::make_shared<SelectionTournament>();
 	std::shared_ptr<CrossoverOperator> cro = std::make_shared<CrossoverShuffle>();
-	Environment::getInstance()->setParameters(Parameters{ 50, 100, 0.3, 0.1, false, false, sel, cro, nullptr });
-	/*
-	tPizza pizza = {
-		{ 'T', 'T', 'T', 'T', 'T' },
-		{ 'T', 'M', 'M', 'M', 'T' },
-		{ 'T', 'T', 'T', 'T', 'T' },
-	};*/
-	if (loadProblem("DataSets\\example.in") == -1){
-		return -1;
+	Environment::getInstance()->setParameters(Parameters{ 100, 200, 0.6, 0.1, false, false, sel, cro, nullptr });
+	Individual best;
+	Individual bestOfAll;
+
+
+	bestScore = -1;
+	for (int i = 0; i < 100; ++i){
+		if (loadProblem("DataSets\\small.in") == -1){
+			return -1;
+		}
+
+		best = ga.run();
+
+		if (best.getAdaptation() > bestScore){
+			bestScore = best.getAdaptation();
+			bestOfAll = best;
+		}
 	}
+	saveSolution("small", bestOfAll);
 
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()));
+	bestScore = -1;
+	for (int i = 0; i < 100; ++i){
+		if (loadProblem("DataSets\\medium.in") == -1){
+			return -1;
+		}
 
-	Individual best = ga.run();
-	
-	std::cout << best.toString() << std::endl;
-	std::cout << best.fitness() << std::endl;
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()), best);
-	
+		Environment::getInstance()->setParameters(Parameters{ 50, 100, 0.3, 0.1, false, false, sel, cro, nullptr });
 
-	if (loadProblem("DataSets\\small.in") == -1){
-		return -1;
+		best = ga.run();
+
+		if (best.getAdaptation() > bestScore){
+			bestScore = best.getAdaptation();
+			bestOfAll = best;
+		}
 	}
+	saveSolution("medium", bestOfAll);
 
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()));
+	bestScore = -1;
+	for (int i = 0; i < 50; ++i){
+		if (loadProblem("DataSets\\big.in") == -1){
+			return -1;
+		}
 
-	best = ga.run();
+		best = ga.run();
 
-	std::cout << best.toString() << std::endl;
-	std::cout << best.fitness() << std::endl;
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()), best);
-
-	if (loadProblem("DataSets\\medium.in") == -1){
-		return -1;
+		if (best.getAdaptation() > bestScore){
+			bestScore = best.getAdaptation();
+			bestOfAll = best;
+		}
 	}
-
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()));
-
-	best = ga.run();
-
-	std::cout << best.toString() << std::endl;
-	std::cout << best.fitness() << std::endl;
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()), best);
-
-	if (loadProblem("DataSets\\big.in") == -1){
-		return -1;
-	}
-
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()));
-
-	best = ga.run();
-
-	std::cout << best.toString() << std::endl;
-	std::cout << best.fitness() << std::endl;
-	std::cout << pizzaToString(*(Environment::getInstance()->getPizza()), best);
-
+	saveSolution("big", bestOfAll);
 	return 0;
 
 }
