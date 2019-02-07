@@ -12,14 +12,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chromosome.hpp" />
+    <ClInclude Include="Environment.hpp" />
     <ClInclude Include="GA.hpp" />
     <ClInclude Include="Gen.hpp" />
     <ClInclude Include="Individual.hpp" />
+    <ClInclude Include="MyRandom.hpp" />
     <ClInclude Include="Parameters.hpp" />
+    <ClInclude Include="Operators.h" />
     <ClInclude Include="Test.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chromosome.cpp" />
+    <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GA.cpp" />
     <ClCompile Include="Gen.cpp" />
     <ClCompile Include="Individual.cpp" />

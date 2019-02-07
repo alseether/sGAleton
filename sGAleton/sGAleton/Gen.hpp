@@ -11,6 +11,6 @@ public:
 	~Gen();
 
 private:
-
+	unsigned int a;
 };
 

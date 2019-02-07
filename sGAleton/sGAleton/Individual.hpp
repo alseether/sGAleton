@@ -6,18 +6,36 @@
 class Individual
 {
 public:
-	typedef std::shared_ptr<Individual> Ptr;
+	Individual(std::vector<unsigned int> cF, std::vector<unsigned int> cC);
 
-public:
 	Individual();
+
 	~Individual();
 
-	virtual double fitness() = 0;
+	double fitness();
 
-	Chromosome::Ptr	getChromosome(){ return m_chromosome; };
-	void			setChromosome(Chromosome::Ptr chromo){ m_chromosome = chromo; };
+	Chromosome	getChromosome() const;
+	void		setChromosome(Chromosome chromo);
+
+	void	setScore(double score);
+
+	void	setScoreAcum(double scoreAcum);
+
+	void	setAdaptation(double adaptation);
+
+	double	getScore() const;
+
+	double	getScoreAcum() const;
+
+	double	getAdaptation() const;
+
+	std::string toString() const;
 
 private:
-	Chromosome::Ptr m_chromosome;
+	Chromosome m_chromosome;
+
+	double m_score;
+	double m_scoreAcum;
+	double m_adaptation;
 };
 
